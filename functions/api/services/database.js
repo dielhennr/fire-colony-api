@@ -33,5 +33,31 @@ const getUser = async (username) => {
   return user.data();
 };
 
+const addColonyToUser = async (username, colonyId) => {
+  if (username) {
+    console.log("test ", username);
+    const user = db.collection('users').doc(username);
+    user.update({
+      ownedColonies: admin.firestore.FieldValue.arrayUnion(colonyId)
+    });
+  }
+};
 
-module.exports = { createUser, getUser };
+const addColony = async (username, colonyInfo) => {
+  const colony = db.collection('colonies').doc();
+  await addColonyToUser(username, colony.id); 
+  colony.set(colonyInfo);
+  return colony.id;
+};
+
+const addAnimal = async (colonyId, animalInfo) => {
+  const colony = db.collection('colonies').doc(colonyId);
+  colony.update({
+    size: admin.firestore.FieldValue.increment(1)
+  });
+  const animal = colony.collection('animals').doc().set(animalInfo);
+  return animal;
+};
+
+
+module.exports = { createUser, getUser, addColony, addAnimal, addColonyToUser };

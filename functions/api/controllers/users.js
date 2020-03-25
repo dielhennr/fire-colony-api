@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const userService = require('../services/users');
+const dataService = require('../services/database');
 const jwt = require('../services/jwt');
 
 /**
@@ -35,7 +35,7 @@ const createUser = async (req, res, next) => {
   const passwordHash = bcrypt.hashSync(password, 5);
   const userBalance = 400;
 
-  await userService.createUser({
+  await dataService.createUser({
     name: {
       first: firstName,
       last: lastName,

@@ -1,5 +1,5 @@
 const jwt = require('../services/jwt');
-const userService = require('../services/users');
+const dataService = require('../services/database');
 
 /**
  * Authentication middleware to verify the validity of a session JWT and retrieve
@@ -16,7 +16,7 @@ const authentication = async (req, res, next) => {
   try {
     const { username } = jwt.verifyToken(session);
 
-    req.user = await userService.getUser(username);
+    req.user = await dataService.getUser(username);
 
     next();
   } catch (err) {

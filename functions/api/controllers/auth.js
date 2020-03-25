@@ -1,7 +1,7 @@
 const { pick } = require('lodash');
 const bcrypt = require('bcrypt');
 const jwt = require('../services/jwt');
-const userService = require('../services/users');
+const dataService = require('../services/database');
 
 const login = async (req, res) => {
   const { body: { username, password } } = req;
@@ -11,7 +11,7 @@ const login = async (req, res) => {
    * i.e. userService.getUser(username) to retrieve a possible user for the username,
    * verify it exists, then compare the password on file
    */
-  return userService.getUser(username)
+  return dataService.getUser(username)
     .then((user) => {
       /* Only return the details we need, otherwise we start leaking data like
        * hashed passwords (or in our case unhashed passwords!!)
