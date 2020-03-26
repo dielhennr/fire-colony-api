@@ -53,10 +53,10 @@ const addColony = async (username, colonyInfo) => {
 const addAnimal = async (colonyId, animalInfo) => {
   const colony = db.collection('colonies').doc(colonyId);
   colony.update({
-    size: admin.firestore.FieldValue.increment(1)
+    size: admin.firestore.FieldValue.increment(1),
+    animals: admin.firestore.FieldValue.arrayUnion(animalInfo)
   });
-  const animal = colony.collection('animals').doc().set(animalInfo);
-  return animal;
+  return animalInfo;
 };
 
 
