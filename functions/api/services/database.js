@@ -8,7 +8,6 @@ admin.initializeApp({
   databaseURL: "https://animal-colony-61928.firebaseio.com"
 });
 
-
 let db = admin.firestore();
 
 /**
@@ -19,7 +18,7 @@ let db = admin.firestore();
  */
 const createUser = async (registrationInformation) => {
   const { username } = registrationInformation;
-  db.collection('users').doc(username).set(registrationInformation);
+  await db.collection('users').doc(username).set(registrationInformation);
   return registrationInformation;
 };
 
@@ -33,31 +32,48 @@ const getUser = async (username) => {
   return user.data();
 };
 
-const addColonyToUser = async (username, colonyId) => {
-  if (username) {
-    console.log("test ", username);
-    const user = db.collection('users').doc(username);
-    user.update({
-      ownedColonies: admin.firestore.FieldValue.arrayUnion(colonyId)
-    });
-  }
-};
-
+/**
+ * Adds initial colony meta data to the database with a generated 
+ * uuid for the colony. This uuid is added to the user's profile.
+ *
+ * @param username - username of person creating this colony
+ * @param colonyInfo - Initial colony meta data
+ *
+ * @return colony.id - uuid of new colony
+ */
 const addColony = async (username, colonyInfo) => {
   const colony = db.collection('colonies').doc();
-  await addColonyToUser(username, colony.id); 
-  colony.set(colonyInfo);
+  addColonyToUser(username, colony.id); 
+  await colony.set(colonyInfo);
   return colony.id;
 };
 
+/**
+ * Adds an animal to a colony's animal list.
+ *
+ * @param colonyId - uuid of colony where animal should be placed
+ * @param animalInfo - json object of the animal
+ *
+ */
 const addAnimal = async (colonyId, animalInfo) => {
   const colony = db.collection('colonies').doc(colonyId);
   colony.update({
     size: admin.firestore.FieldValue.increment(1),
     animals: admin.firestore.FieldValue.arrayUnion(animalInfo)
   });
-  return animalInfo;
 };
 
+/**
+ * Adds a colony uuid to a users ownedColonies
+ *
+ * @param username - user's username
+ * @param colonyId - uuid of colony to add to profile
+ */
+const addColonyToUser = async (username, colonyId) => {
+  const user = db.collection('users').doc(username);
+  user.update({
+    ownedColonies: admin.firestore.FieldValue.arrayUnion(colonyId)
+  });
+};
 
 module.exports = { createUser, getUser, addColony, addAnimal, addColonyToUser };
