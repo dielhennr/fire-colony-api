@@ -1,4 +1,5 @@
 const functions = require('firebase-functions');
+const { pick } = require('lodash');
 const admin = require('firebase-admin');
 
 var serviceAccount = require("../../animal-colony-76d9b-firebase-adminsdk-egbh6-ac4894dd6b.json");
@@ -18,6 +19,7 @@ let db = admin.firestore();
  */
 const createUser = async (registrationInformation) => {
   const { username } = registrationInformation;
+  registrationInformation['ownedColonies'] = [];
   await db.collection('users').doc(username).set(registrationInformation);
   return registrationInformation;
 };
@@ -44,6 +46,7 @@ const getUser = async (username) => {
 const addColony = async (username, colonyInfo) => {
   const colony = db.collection('colonies').doc();
   addColonyToUser(username, colony.id); 
+  colonyInfo['colonyId'] = colony.id;
   await colony.set(colonyInfo);
   return colony.id;
 };
@@ -58,9 +61,12 @@ const addColony = async (username, colonyInfo) => {
 const addAnimal = async (colonyId, animalInfo) => {
   const colony = db.collection('colonies').doc(colonyId);
   colony.update({
-    size: admin.firestore.FieldValue.increment(1),
-    animals: admin.firestore.FieldValue.arrayUnion(animalInfo)
+    size: admin.firestore.FieldValue.increment(1)
   });
+
+  const animal = colony.collection('animals').doc();
+  await animal.set(animalInfo);
+  return animal.id;
 };
 
 /**
@@ -76,4 +82,17 @@ const addColonyToUser = async (username, colonyId) => {
   });
 };
 
-module.exports = { createUser, getUser, addColony, addAnimal, addColonyToUser };
+const getColonies = async (list) => {
+  var coloniesRef = db.collection('colonies');
+
+  var colonies = [];
+
+  for (var i = 0; i < list.length; i++) {
+    const colony = await coloniesRef.doc(list[i]).get();
+    colonies.push(colony.data());
+  }
+
+  return colonies;
+};
+
+module.exports = { createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies };
