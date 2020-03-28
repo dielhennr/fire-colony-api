@@ -82,7 +82,6 @@ const addAnimal = async (colonyId, animalInfo) => {
 
 const getColonies = async (list) => {
   const coloniesRef = db.collection('colonies');
-
   const colonies = [];
 
   for (let i = 0; i < list.length; i++) {
@@ -93,6 +92,27 @@ const getColonies = async (list) => {
   return colonies;
 };
 
+const getAnimals = async (reference) => {
+  const snapshot = await reference.get();
+  const results = snapshot.docs.map(doc => doc.data());
+  return results;
+}
+
+const getFirstAnimals = async (colonyId, pageSize) => {
+  const animalsRef = db.collection('colonies').doc(colonyId).collection('animals').limit(pageSize);
+  return await getAnimals(animalsRef);
+};
+
+const getNextAnimals = async (colonyId, pageSize, cursorAnimal) => {
+  const animalsRef = db.collection('colonies').doc(colonyId).collection('animals').startAfter(cursorAnimal).limit(pageSize);
+  return await getAnimals(animalsRef);
+};
+
+const getPrevAnimals = async (colonyId, pageSize, cursorAnimal) => {
+  const animalsRef = db.collection('colonies').doc(colonyId).collection('animals').endBefore(cursorAnimal).limitToLast(pageSize);
+  return await getAnimals(animalsRef);
+};
+
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies,
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getFirstAnimals, getNextAnimals, getPrevAnimals
 };

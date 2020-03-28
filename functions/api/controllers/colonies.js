@@ -57,19 +57,38 @@ const createAnimal = async (headers, line) => {
     animal[headers[i]] = lineSplit[i];
   }
 
-  console.log(animal);
   return animal;
 };
 
 /**
- * Get animals for requested colony and partition
+ * Get first set of animals for requested colony
  *
  * @param req
  * @param res
  * @param next
  */
-const getAnimals = async (req, res, next) => {
-  const { body: colonyId } = req;
+const getAnimals = async (req, res) => {
+  const { body: colonyId, pageSize } = req;
+
+  const animals = await dataService.getFirstAnimals(colonyId, pageSize);
+
+  res.status(200).json(animals);
 };
 
-module.exports = { createColony, getAnimals };
+/**
+ * Get next/prev batch of animals based on colonyId, pageSize, cursor, and next boolean from frontend 
+ * next true if you want next batch/false if you want previous batch
+ */
+const getNextOrPrev = async (req, res) => {
+  const { body: colonyId, pageSize, cursor, next } = req;
+
+  var animals;  
+  if (next) {
+    animals = await dataService.getNextAnimals(colonyId, pageSize, cursor);
+  } else {
+    animals = await dataService.getPrevAnimals(colonyId, pageSize, cursor);
+  }
+  res.status(200).json(animals);
+};
+
+module.exports = { createColony, getAnimals, getNextOrPrev };
