@@ -38,6 +38,15 @@ const createColony = async (req, res, next) => {
   colonyMeta.colonyId = colonyId;
   colonyMeta.size = animalCount;
 
+  const animalPart = await dataService.getAnimals(colonyId, 5, 2);
+  const animalPrev = await dataService.getAnimals(colonyId, 5, 1);
+  const animalNext = await dataService.getAnimals(colonyId, 5, 3);
+
+  console.log('id', colonyId);
+  console.log('prev of offset call', animalPrev);
+  console.log('offset', animalPart);
+  console.log('next of offset call', animalNext);
+
   res.status(200).json(colonyMeta);
 };
 
@@ -61,34 +70,19 @@ const createAnimal = async (headers, line) => {
 };
 
 /**
- * Get first set of animals for requested colony
+ * Get animals of a colony starting at a certain page with a certain page size
  *
  * @param req
  * @param res
- * @param next
  */
 const getAnimals = async (req, res) => {
-  const { body: colonyId, pageSize } = req;
+  const { body: colonyId, pageSize, pageNum } = req;
 
-  const animals = await dataService.getFirstAnimals(colonyId, pageSize);
-
-  res.status(200).json(animals);
+  await dataService.getAnimalsFrom(colonyId, pageSize, pageNum)
+    .then((animals) => {
+      res.status(200).json(animals);
+    })
+    .catch(() => res.sendStatus(404));
 };
 
-/**
- * Get next/prev batch of animals based on colonyId, pageSize, cursor, and next boolean from frontend 
- * next true if you want next batch/false if you want previous batch
- */
-const getNextOrPrev = async (req, res) => {
-  const { body: colonyId, pageSize, cursor, next } = req;
-
-  var animals;  
-  if (next) {
-    animals = await dataService.getNextAnimals(colonyId, pageSize, cursor);
-  } else {
-    animals = await dataService.getPrevAnimals(colonyId, pageSize, cursor);
-  }
-  res.status(200).json(animals);
-};
-
-module.exports = { createColony, getAnimals, getNextOrPrev };
+module.exports = { createColony, getAnimals };

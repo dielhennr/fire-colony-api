@@ -8,6 +8,4 @@ router.post('/', authentication, colonyController.createColony);
 
 router.get('/', authentication, colonyController.getAnimals);
 
-router.get('/paginated', authentication, colonyController.getNextOrPrev);
-
 module.exports = router;

@@ -74,7 +74,6 @@ const addAnimal = async (colonyId, animalInfo) => {
   await colony.update({
     size: admin.firestore.FieldValue.increment(1),
   });
-
   const animal = colony.collection('animals').doc();
   await animal.set(animalInfo);
   return animal.id;
@@ -92,27 +91,13 @@ const getColonies = async (list) => {
   return colonies;
 };
 
-const getAnimals = async (reference) => {
-  const snapshot = await reference.get();
+const getAnimals = async (colonyId, pageSize, pageNum) => {
+  const animalsRef = db.collection('colonies').doc(colonyId).collection('animals').limit(pageSize).offset(pageSize * (pageNum - 1));
+  const snapshot = await animalsRef.get();
   const results = snapshot.docs.map(doc => doc.data());
   return results;
-}
-
-const getFirstAnimals = async (colonyId, pageSize) => {
-  const animalsRef = db.collection('colonies').doc(colonyId).collection('animals').limit(pageSize);
-  return await getAnimals(animalsRef);
-};
-
-const getNextAnimals = async (colonyId, pageSize, cursorAnimal) => {
-  const animalsRef = db.collection('colonies').doc(colonyId).collection('animals').startAfter(cursorAnimal).limit(pageSize);
-  return await getAnimals(animalsRef);
-};
-
-const getPrevAnimals = async (colonyId, pageSize, cursorAnimal) => {
-  const animalsRef = db.collection('colonies').doc(colonyId).collection('animals').endBefore(cursorAnimal).limitToLast(pageSize);
-  return await getAnimals(animalsRef);
 };
 
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getFirstAnimals, getNextAnimals, getPrevAnimals
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals
 };
