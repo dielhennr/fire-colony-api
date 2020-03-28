@@ -1,15 +1,13 @@
-const functions = require('firebase-functions');
-const { pick } = require('lodash');
 const admin = require('firebase-admin');
 
-var serviceAccount = require("../../animal-colony-76d9b-firebase-adminsdk-egbh6-ac4894dd6b.json");
+const serviceAccount = require('../../animal-colony-76d9b-firebase-adminsdk-egbh6-ac4894dd6b.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://animal-colony-61928.firebaseio.com"
+  databaseURL: 'https://animal-colony-61928.firebaseio.com',
 });
 
-let db = admin.firestore();
+const db = admin.firestore();
 
 /**
  * Sends a user's registration information to the mock database and returns
@@ -19,9 +17,8 @@ let db = admin.firestore();
  */
 const createUser = async (registrationInformation) => {
   const { username } = registrationInformation;
-  registrationInformation['ownedColonies'] = [];
-  await db.collection('users').doc(username).set(registrationInformation);
-  return registrationInformation;
+  registrationInformation.ownedColonies = [];
+  return await db.collection('users').doc(username).set(registrationInformation);
 };
 
 /**
@@ -34,8 +31,22 @@ const getUser = async (username) => {
   return user.data();
 };
 
+
 /**
- * Adds initial colony meta data to the database with a generated 
+ * Adds a colony uuid to a users ownedColonies
+ *
+ * @param username - user's username
+ * @param colonyId - uuid of colony to add to profile
+ */
+const addColonyToUser = async (username, colonyId) => {
+  const user = db.collection('users').doc(username);
+  user.update({
+    ownedColonies: admin.firestore.FieldValue.arrayUnion(colonyId),
+  });
+};
+
+/**
+ * Adds initial colony meta data to the database with a generated
  * uuid for the colony. This uuid is added to the user's profile.
  *
  * @param username - username of person creating this colony
@@ -45,8 +56,8 @@ const getUser = async (username) => {
  */
 const addColony = async (username, colonyInfo) => {
   const colony = db.collection('colonies').doc();
-  addColonyToUser(username, colony.id); 
-  colonyInfo['colonyId'] = colony.id;
+  addColonyToUser(username, colony.id);
+  colonyInfo.colonyId = colony.id;
   await colony.set(colonyInfo);
   return colony.id;
 };
@@ -60,8 +71,8 @@ const addColony = async (username, colonyInfo) => {
  */
 const addAnimal = async (colonyId, animalInfo) => {
   const colony = db.collection('colonies').doc(colonyId);
-  colony.update({
-    size: admin.firestore.FieldValue.increment(1)
+  await colony.update({
+    size: admin.firestore.FieldValue.increment(1),
   });
 
   const animal = colony.collection('animals').doc();
@@ -69,25 +80,12 @@ const addAnimal = async (colonyId, animalInfo) => {
   return animal.id;
 };
 
-/**
- * Adds a colony uuid to a users ownedColonies
- *
- * @param username - user's username
- * @param colonyId - uuid of colony to add to profile
- */
-const addColonyToUser = async (username, colonyId) => {
-  const user = db.collection('users').doc(username);
-  user.update({
-    ownedColonies: admin.firestore.FieldValue.arrayUnion(colonyId)
-  });
-};
-
 const getColonies = async (list) => {
-  var coloniesRef = db.collection('colonies');
+  const coloniesRef = db.collection('colonies');
 
-  var colonies = [];
+  const colonies = [];
 
-  for (var i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length; i++) {
     const colony = await coloniesRef.doc(list[i]).get();
     colonies.push(colony.data());
   }
@@ -95,4 +93,6 @@ const getColonies = async (list) => {
   return colonies;
 };
 
-module.exports = { createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies };
+module.exports = {
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies,
+};

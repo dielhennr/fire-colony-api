@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const userRouter = require('./users');
-const colonyRouter  = require('./colonies');
+const colonyRouter = require('./colonies');
 const authController = require('../controllers/auth');
 
 const router = Router();

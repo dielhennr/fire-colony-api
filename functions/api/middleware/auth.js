@@ -12,7 +12,7 @@ const dataService = require('../services/database');
  * @returns {Promise<*>}
  */
 const authentication = async (req, res, next) => {
-  const { cookies : { session } } = req;
+  const { cookies: { session } } = req;
   try {
     const { username } = jwt.verifyToken(session);
 

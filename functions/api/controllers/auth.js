@@ -24,12 +24,11 @@ const login = async (req, res) => {
 
     const { username } = userDetails;
     const authToken = jwt.createToken({ username });
-  
-    userDetails['ownedColonies'] = coloniesMeta;
+
+    userDetails.ownedColonies = coloniesMeta;
 
     res.cookie('session', authToken).status(200).json(userDetails);
   } catch (err) {
-    console.log(err);
     res.sendStatus(401);
   }
 };

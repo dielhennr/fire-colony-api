@@ -28,12 +28,10 @@ const createUser = async (req, res, next) => {
     },
   } = req;
   if (!firstName || !lastName) {
-
     next(Error(`Missing ${!firstName ? 'first' : 'last'} name`));
   }
 
   const passwordHash = bcrypt.hashSync(password, 5);
-  const userBalance = 400;
 
   await dataService.createUser({
     name: {
@@ -43,7 +41,6 @@ const createUser = async (req, res, next) => {
     },
     passwordHash,
     username,
-    userBalance,
   }).then((userDetails) => {
     const { username } = userDetails;
     const authToken = jwt.createToken({ username });
