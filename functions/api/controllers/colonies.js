@@ -38,15 +38,6 @@ const createColony = async (req, res, next) => {
   colonyMeta.colonyId = colonyId;
   colonyMeta.size = animalCount;
 
-  const animalPart = await dataService.getAnimals(colonyId, 5, 2);
-  const animalPrev = await dataService.getAnimals(colonyId, 5, 1);
-  const animalNext = await dataService.getAnimals(colonyId, 5, 3);
-
-  console.log('id', colonyId);
-  console.log('prev of offset call', animalPrev);
-  console.log('offset', animalPart);
-  console.log('next of offset call', animalNext);
-
   res.status(200).json(colonyMeta);
 };
 
