@@ -27,7 +27,7 @@ const login = async (req, res) => {
 
     userDetails.ownedColonies = coloniesMeta;
 
-    res.cookie('session', authToken).status(200).json(userDetails);
+    res.cookie('session', authToken, { sameSite: 'none', secure: true }).status(200).json(userDetails);
   } catch (err) {
     res.sendStatus(401);
   }

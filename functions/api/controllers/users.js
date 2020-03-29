@@ -32,6 +32,7 @@ const createUser = async (req, res, next) => {
   }
 
   const passwordHash = bcrypt.hashSync(password, 5);
+  const ownedColonies = [];
 
   await dataService.createUser({
     name: {
@@ -39,13 +40,14 @@ const createUser = async (req, res, next) => {
       last: lastName,
       full: `${firstName} ${lastName}`,
     },
+    ownedColonies,
     passwordHash,
     username,
   }).then((userDetails) => {
     const { username } = userDetails;
     const authToken = jwt.createToken({ username });
     res
-      .cookie('session', authToken)
+      .cookie('session', authToken, { sameSite: 'none', secure: true })
       .status(200)
       .json(userDetails);
   }).catch((err) => {

@@ -17,8 +17,8 @@ const db = admin.firestore();
  */
 const createUser = async (registrationInformation) => {
   const { username } = registrationInformation;
-  registrationInformation.ownedColonies = [];
-  return await db.collection('users').doc(username).set(registrationInformation);
+  await db.collection('users').doc(username).set(registrationInformation);
+  return registrationInformation;
 };
 
 /**
