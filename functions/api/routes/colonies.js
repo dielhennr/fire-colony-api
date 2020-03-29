@@ -6,6 +6,6 @@ const router = Router();
 
 router.post('/', authentication, colonyController.createColony);
 
-router.get('/', authentication, colonyController.getAnimals);
+router.post('/animals', authentication, colonyController.getAnimals);
 
 module.exports = router;

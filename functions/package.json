@@ -6,6 +6,7 @@
   },
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
+    "lint": "eslint .",
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
@@ -27,6 +28,7 @@
     "lodash": "^4.17.15"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
     "firebase-functions-test": "^0.1.6",
     "minimist": "^1.2.5",
     "pre-push": "^0.1.1"

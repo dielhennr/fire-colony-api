@@ -1,4 +1,3 @@
-const debug = require('debug')('app:server');
 const functions = require('firebase-functions');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
