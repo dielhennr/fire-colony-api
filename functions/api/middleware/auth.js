@@ -14,10 +14,10 @@ const dataService = require('../services/database');
 const authentication = async (req, res, next) => {
   const { cookies: { session } } = req;
   try {
-    const { username } = jwt.verifyToken(session);
+    const { email } = jwt.verifyToken(session);
 
-    req.user = await dataService.getUser(username);
-
+    req.user = await dataService.getUser(email);
+    delete req.user.passwordHash;
     next();
   } catch (err) {
     // We'd want to create a new HTTP Error here with a 401 (Unauthenticated) status

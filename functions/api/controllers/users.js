@@ -24,7 +24,7 @@ const createUser = async (req, res, next) => {
   console.log(req.body);
   const {
     body: {
-      firstName, lastName, username, password,
+      firstName, lastName, email, password,
     },
   } = req;
   if (!firstName || !lastName) {
@@ -40,12 +40,13 @@ const createUser = async (req, res, next) => {
       last: lastName,
       full: `${firstName} ${lastName}`,
     },
+    email,
     ownedColonies,
     passwordHash,
-    username,
   }).then((userDetails) => {
-    const { username } = userDetails;
-    const authToken = jwt.createToken({ username });
+    const { email } = userDetails;
+    delete userDetails.passwordHash;
+    const authToken = jwt.createToken({ email });
     res
       .cookie('session', authToken, { sameSite: 'none', secure: true })
       .status(200)

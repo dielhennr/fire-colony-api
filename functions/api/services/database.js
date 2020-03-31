@@ -16,8 +16,8 @@ const db = admin.firestore();
  * @returns {Promise<Object>}
  */
 const createUser = async (registrationInformation) => {
-  const { username } = registrationInformation;
-  await db.collection('users').doc(username).set(registrationInformation);
+  const { email } = registrationInformation;
+  await db.collection('users').doc(email).set(registrationInformation);
   return registrationInformation;
 };
 
@@ -26,8 +26,8 @@ const createUser = async (registrationInformation) => {
  * @param username
  * @returns {Promise<Object>}
  */
-const getUser = async (username) => {
-  const user = await db.collection('users').doc(username).get();
+const getUser = async (email) => {
+  const user = await db.collection('users').doc(email).get();
   return user.data();
 };
 
@@ -38,8 +38,8 @@ const getUser = async (username) => {
  * @param username - user's username
  * @param colonyId - uuid of colony to add to profile
  */
-const addColonyToUser = async (username, colonyId) => {
-  const user = db.collection('users').doc(username);
+const addColonyToUser = async (email, colonyId) => {
+  const user = db.collection('users').doc(email);
   user.update({
     ownedColonies: admin.firestore.FieldValue.arrayUnion(colonyId),
   });
@@ -54,9 +54,9 @@ const addColonyToUser = async (username, colonyId) => {
  *
  * @return colony.id - uuid of new colony
  */
-const addColony = async (username, colonyInfo) => {
+const addColony = async (email, colonyInfo) => {
   const colony = db.collection('colonies').doc();
-  addColonyToUser(username, colony.id);
+  addColonyToUser(email, colony.id);
   colonyInfo.colonyId = colony.id;
   await colony.set(colonyInfo);
   return colony.id;
@@ -92,10 +92,11 @@ const getColonies = async (list) => {
 };
 
 const getAnimals = async (colonyId, pageSize, pageNum) => {
-  const animalsRef = db.collection('colonies').doc(colonyId).collection('animals').limit(pageSize).offset(pageSize * (pageNum - 1));
+  const animalsRef = db.collection('colonies').doc(colonyId).collection('animals').limit(pageSize).offset(pageSize * pageNum);
   const snapshot = await animalsRef.get();
   const results = snapshot.docs.map(doc => doc.data());
-  return results;
+  const animals = { animals: results };
+  return animals;
 };
 
 module.exports = {

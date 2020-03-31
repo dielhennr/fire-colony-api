@@ -4,17 +4,17 @@ const jwt = require('../services/jwt');
 const dataService = require('../services/database');
 
 const login = async (req, res) => {
-  const { body: { username, password } } = req;
+  const { body: { email, password } } = req;
   /* Verify that a user exists in the database with the given username
    * and password combination
    */
-  const user = await dataService.getUser(username);
+  const user = await dataService.getUser(email);
 
   try {
     /* Only return the details we need, otherwise we start leaking data like
       * hashed passwords (or in our case unhashed passwords!!)
       */
-    const userDetails = pick(user, ['name', 'username', 'ownedColonies']);
+    const userDetails = pick(user, ['name', 'email', 'ownedColonies']);
     const coloniesMeta = await dataService.getColonies(userDetails.ownedColonies);
     const pass = pick(user, 'passwordHash');
 
@@ -22,8 +22,8 @@ const login = async (req, res) => {
       throw new Error('Invalid Password');
     }
 
-    const { username } = userDetails;
-    const authToken = jwt.createToken({ username });
+    const { email } = userDetails;
+    const authToken = jwt.createToken({ email });
 
     userDetails.ownedColonies = coloniesMeta;
 

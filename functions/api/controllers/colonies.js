@@ -9,11 +9,11 @@ const dataService = require('../services/database');
  * @param next
  */
 const createColony = async (req, res, next) => {
-  const { user: { username }, body: { payload, name } } = req;
+  const { user: { email }, body: { payload, name } } = req;
 
   /* Create initial colony meta data and add to db */
   const colonyMeta = { colonyName: name, size: 0 };
-  const colonyId = await dataService.addColony(username, colonyMeta);
+  const colonyId = await dataService.addColony(email, colonyMeta);
 
   /* Parse the csv payload */
   const lines = payload.split('\n');
@@ -67,9 +67,9 @@ const createAnimal = async (headers, line) => {
  * @param res
  */
 const getAnimals = async (req, res) => {
-  const { body: colonyId, pageSize, pageNum } = req;
+  const { body: { colonyId, rowsPerPage, page } } = req;
 
-  await dataService.getAnimalsFrom(colonyId, pageSize, pageNum)
+  await dataService.getAnimals(colonyId, rowsPerPage, page)
     .then((animals) => {
       res.status(200).json(animals);
     })
