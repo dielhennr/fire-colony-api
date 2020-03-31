@@ -67,9 +67,9 @@ const createAnimal = async (headers, line) => {
  * @param res
  */
 const getAnimals = async (req, res) => {
-  const { body: { colonyId, rowsPerPage, page } } = req;
+  const { body: { colonyId, colonySize, rowsPerPage, page } } = req;
 
-  await dataService.getAnimals(colonyId, rowsPerPage, page)
+  await dataService.getAnimals(colonyId, colonySize, rowsPerPage, page)
     .then((animals) => {
       res.status(200).json(animals);
     })
