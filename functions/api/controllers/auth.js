@@ -14,8 +14,9 @@ const login = async (req, res) => {
     /* Only return the details we need, otherwise we start leaking data like
       * hashed passwords (or in our case unhashed passwords!!)
       */
-    const userDetails = pick(user, ['name', 'email', 'ownedColonies']);
-    const coloniesMeta = await dataService.getColonies(userDetails.ownedColonies);
+    const userDetails = pick(user, ['name', 'email', 'ownedColonies', 'sharedColonies']);
+    const ownedColoniesMeta = await dataService.getColonies(userDetails.ownedColonies);
+    const sharedColoniesMeta = await dataService.getColonies(userDetails.sharedColonies);
     const pass = pick(user, 'passwordHash');
 
     if (!bcrypt.compareSync(password, pass.passwordHash)) {
@@ -25,7 +26,8 @@ const login = async (req, res) => {
     const { email } = userDetails;
     const authToken = jwt.createToken({ email });
 
-    userDetails.ownedColonies = coloniesMeta;
+    userDetails.ownedColonies = ownedColoniesMeta;
+    userDetails.sharedColonies = sharedColoniesMeta;
 
     res.cookie('session', authToken, { sameSite: 'none', secure: true }).status(200).json(userDetails);
   } catch (err) {

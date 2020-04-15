@@ -46,6 +46,51 @@ const addColonyToUser = async (email, colonyId) => {
 };
 
 /**
+ * Adds a colony uuid to a users sharedColonies
+ *
+ * @param username - user's username
+ * @param colonyId - uuid of colony to add to profile
+ */
+const addSharedColonyToUser = async (email, colonyId) => {
+  const user = db.collection('users').doc(email);
+  user.update({
+    sharedColonies: admin.firestore.FieldValue.arrayUnion(colonyId),
+  });
+};
+
+const deleteColony = async (email, colonyId) => {
+  const colony = db.collection('colonies').doc(colonyId);
+  const animals = colony.collection('animals');
+  await deleteAnimals(animals);
+  colony.delete();
+  return;
+};
+
+const deleteAnimals = async (query) => {
+  query.get()
+    .then((snapshot) => {
+      if (snapshot.size === 0) {
+        return 0;
+      }
+      
+      var batch = db.batch();
+      snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+    }).then((numDeleted) => {
+      if (numDeleted === 0) {
+        return;
+      }
+
+      process.nextTick(() => {
+        deleteAnimals(query);
+      });
+    })
+    .catch(() => {
+    });
+}
+
+/**
  * Adds initial colony meta data to the database with a generated
  * uuid for the colony. This uuid is added to the user's profile.
  *
@@ -85,7 +130,9 @@ const getColonies = async (list) => {
 
   for (let i = 0; i < list.length; i++) {
     const colony = await coloniesRef.doc(list[i]).get();
-    colonies.push(colony.data());
+    if (colony.exists) {
+      colonies.push(colony.data());
+    }
   }
 
   return colonies;
@@ -102,5 +149,5 @@ const getAnimals = async (colonyId, colonyName, colonySize, pageSize, pageNum) =
 };
 
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony
 };

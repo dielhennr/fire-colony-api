@@ -33,6 +33,7 @@ const createUser = async (req, res, next) => {
 
   const passwordHash = bcrypt.hashSync(password, 5);
   const ownedColonies = [];
+  const sharedColonies = [];
 
   await dataService.createUser({
     name: {
@@ -42,6 +43,7 @@ const createUser = async (req, res, next) => {
     },
     email,
     ownedColonies,
+    sharedColonies,
     passwordHash,
   }).then((userDetails) => {
     const { email } = userDetails;

@@ -7,7 +7,7 @@ const apiRoutes = require('./api/routes');
 
 const app = express();
 
-const options = { origin: "https://tender-murdock-c00c89.netlify.com", credentials: true };
+const options = { origin: "http://localhost:3000", credentials: true };
 
 app.use(cors(options));
 app.use(cookieParser());
