@@ -77,6 +77,7 @@ const deleteAnimals = async (query) => {
       snapshot.docs.forEach((doc) => {
         batch.delete(doc.ref);
       });
+      return batch.commit();
     }).then((numDeleted) => {
       if (numDeleted === 0) {
         return;
