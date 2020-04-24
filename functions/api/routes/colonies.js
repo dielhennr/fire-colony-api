@@ -8,6 +8,8 @@ router.post('/', authentication, colonyController.createColony);
 
 router.post('/animals', authentication, colonyController.getAnimals);
 
+router.post('/deleteAnimal', authentication, colonyController.deleteAnimal);
+
 router.post('/delete', authentication, colonyController.deleteColony);
 
 router.post('/share', authentication, colonyController.shareColony);

@@ -58,7 +58,7 @@ const addSharedColonyToUser = async (email, colonyId) => {
   });
 };
 
-const deleteColony = async (email, colonyId) => {
+const deleteColony = async (colonyId) => {
   const colony = db.collection('colonies').doc(colonyId);
   const animals = colony.collection('animals');
   await deleteAnimals(animals);
@@ -92,6 +92,25 @@ const deleteAnimals = async (query) => {
 }
 
 /**
+ * Delete an animal from a colony in the database
+ *
+ * @param colonyId - colony to delete from
+ * @param animalId - animal to delete
+ */
+const deleteAnimal = async (colonyId, animalId) => {
+
+  const colony = db.collection('colonies').doc(colonyId);
+  const animalToDelete = colony.collection('animals').doc(animalId);
+
+  animalToDelete.delete()
+    .then(() => {
+      colony.update({
+        size: admin.firestore.FieldValue.increment(-1),
+      });
+  }).catch((error) => console.log(error));
+}
+
+/**
  * Adds initial colony meta data to the database with a generated
  * uuid for the colony. This uuid is added to the user's profile.
  *
@@ -121,6 +140,7 @@ const addAnimal = async (colonyId, animalInfo) => {
     size: admin.firestore.FieldValue.increment(1),
   });
   const animal = colony.collection('animals').doc();
+  animalInfo.animalUUID = animal.id;
   await animal.set(animalInfo);
   return animal.id;
 };
@@ -150,5 +170,5 @@ const getAnimals = async (colonyId, colonyName, colonySize, pageSize, pageNum) =
 };
 
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal
 };

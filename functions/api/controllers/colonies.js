@@ -42,15 +42,23 @@ const createColony = async (req, res, next) => {
 };
 
 const deleteColony = async (req, res) => {
-  const { user: { email }, body: { colonyId } } = req;
+  const { body: { colonyId } } = req;
 
-  await dataService.deleteColony(email, colonyId)
+  await dataService.deleteColony(colonyId)
     .then((result) => {
       res.status(200).json(result);
     })
     .catch(() => res.sendStatus(404));
-
 };
+
+const deleteAnimal = async (req, res) => {
+  const { body: { colonyId, animalId } } = req;
+  await dataService.deleteAnimal(colonyId, animalId)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch(() => res.sendStatus(404));
+}
 
 /**
  * Parses a single line of csv data into an animal json object
@@ -97,4 +105,4 @@ const shareColony = async (req, res) => {
     .catch(() => res.sendStatus(404));
 };
 
-module.exports = { createColony, getAnimals, shareColony, deleteColony };
+module.exports = { createColony, getAnimals, shareColony, deleteColony, deleteAnimal };
