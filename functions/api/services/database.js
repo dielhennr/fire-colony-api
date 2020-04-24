@@ -51,10 +51,11 @@ const addColonyToUser = async (email, colonyId) => {
  * @param username - user's username
  * @param colonyId - uuid of colony to add to profile
  */
-const addSharedColonyToUser = async (email, colonyId) => {
+const addSharedColonyToUser = async (email, colonyId, accessRights) => {
   const user = db.collection('users').doc(email);
+  const entry = { colonyId, accessRights };
   user.update({
-    sharedColonies: admin.firestore.FieldValue.arrayUnion(colonyId),
+    sharedColonies: admin.firestore.FieldValue.arrayUnion(entry),
   });
 };
 
@@ -169,6 +170,21 @@ const getColonies = async (list) => {
   return colonies;
 };
 
+const getSharedColonies = async (list) => {
+  const coloniesRef = db.collection('colonies');
+  const colonies = [];
+
+  for (let i = 0; i < list.length; i++) {
+    const colony = await coloniesRef.doc(list[i].colonyId).get();
+    if (colony.exists) {
+      const obj = colony.data();
+      obj.accessRights = list[i].accessRights;
+      colonies.push(obj);
+    }
+  }
+  return colonies;
+};
+
 const getAnimals = async (colonyId, colonyName, colonySize, pageSize, pageNum) => {
   const colonyRef = db.collection('colonies').doc(colonyId);
   const animalsRef = colonyRef.collection('animals').limit(pageSize).offset(pageSize * pageNum);
@@ -180,5 +196,5 @@ const getAnimals = async (colonyId, colonyName, colonySize, pageSize, pageNum) =
 };
 
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal, getSharedColonies
 };

@@ -105,9 +105,9 @@ const getAnimals = async (req, res) => {
 };
 
 const shareColony = async (req, res) => {
-  const { body: { email, colonyId } } = req;
+  const { body: { email, colonyId, accessRights } } = req;
 
-  await dataService.addSharedColonyToUser(email, colonyId)
+  await dataService.addSharedColonyToUser(email, colonyId, accessRights)
     .then((uuid) => {
       res.status(200).json(uuid);
     })

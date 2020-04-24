@@ -16,7 +16,8 @@ const login = async (req, res) => {
       */
     const userDetails = pick(user, ['name', 'email', 'ownedColonies', 'sharedColonies']);
     const ownedColoniesMeta = await dataService.getColonies(userDetails.ownedColonies);
-    const sharedColoniesMeta = await dataService.getColonies(userDetails.sharedColonies);
+    const sharedColoniesMeta = await dataService.getSharedColonies(userDetails.sharedColonies);
+
     const pass = pick(user, 'passwordHash');
 
     if (!bcrypt.compareSync(password, pass.passwordHash)) {
