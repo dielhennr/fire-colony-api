@@ -60,6 +60,15 @@ const deleteAnimal = async (req, res) => {
     .catch(() => res.sendStatus(404));
 }
 
+const editAnimal = async (req, res) => {
+  const { body: { animal, colonyId } } = req;
+  await dataService.editAnimal(colonyId, animal)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch(() => res.sendStatus(404));
+}
+
 /**
  * Parses a single line of csv data into an animal json object
  *
@@ -105,4 +114,4 @@ const shareColony = async (req, res) => {
     .catch(() => res.sendStatus(404));
 };
 
-module.exports = { createColony, getAnimals, shareColony, deleteColony, deleteAnimal };
+module.exports = { createColony, getAnimals, shareColony, deleteColony, deleteAnimal, editAnimal };

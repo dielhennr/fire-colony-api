@@ -110,6 +110,16 @@ const deleteAnimal = async (colonyId, animalId) => {
   }).catch((error) => console.log(error));
 }
 
+const editAnimal = async (colonyId, animal) => {
+
+  const colonyRef = db.collection('colonies').doc(colonyId);
+  const animalRef = colonyRef.collection('animals').doc(animal.animalUUID);
+
+  await animalRef.set(animal);
+
+  return animal;
+}
+
 /**
  * Adds initial colony meta data to the database with a generated
  * uuid for the colony. This uuid is added to the user's profile.
@@ -170,5 +180,5 @@ const getAnimals = async (colonyId, colonyName, colonySize, pageSize, pageNum) =
 };
 
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal
 };
