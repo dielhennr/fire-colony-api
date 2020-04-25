@@ -85,8 +85,19 @@ const createAnimal = async (headers, line) => {
     animal[headers[i]] = lineSplit[i];
   }
 
+  animal.imageLinks = [];
+
   return animal;
 };
+
+const storeImageLink = async (req, res) => {
+  const { body: { colonyId, animalId, url } } = req;
+  await dataService.storeImageLink(colonyId, animalId, url)
+    .then((link) => {
+      res.status(200).json(link);
+    })
+    .catch(() => res.sendStatus(500));
+}
 
 /**
  * Get animals of a colony starting at a certain page with a certain page size
@@ -114,4 +125,4 @@ const shareColony = async (req, res) => {
     .catch(() => res.sendStatus(404));
 };
 
-module.exports = { createColony, getAnimals, shareColony, deleteColony, deleteAnimal, editAnimal };
+module.exports = { createColony, getAnimals, shareColony, deleteColony, deleteAnimal, editAnimal, storeImageLink };
