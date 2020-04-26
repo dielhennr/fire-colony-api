@@ -54,6 +54,11 @@ const addColonyToUser = async (email, colonyId) => {
 const addSharedColonyToUser = async (email, colonyId, accessRights) => {
   const user = db.collection('users').doc(email);
   const entry = { colonyId, accessRights };
+  const inversePermission = !accessRights;
+  user.update({
+    sharedColonies: admin.firestore.FieldValue.arrayRemove({ colonyId, accessRights: inversePermission }),
+  });
+
   user.update({
     sharedColonies: admin.firestore.FieldValue.arrayUnion(entry),
   });
@@ -193,13 +198,13 @@ const getSharedColonies = async (list) => {
   return colonies;
 };
 
-const getAnimals = async (colonyId, colonyName, accessRights, colonySize, pageSize, pageNum) => {
+const getAnimals = async (colonyId, pageSize, pageNum) => {
   const colonyRef = db.collection('colonies').doc(colonyId);
   const animalsRef = colonyRef.collection('animals').limit(pageSize).offset(pageSize * pageNum);
 
   const snapshot = await animalsRef.get();
   const results = snapshot.docs.map(doc => doc.data());
-  const animals = { animals: results, colonyId, accessRights, colonyName, colonySize };
+  const animals = { animals: results, colonyId };
   return animals;
 };
 
