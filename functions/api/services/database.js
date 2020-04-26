@@ -193,13 +193,13 @@ const getSharedColonies = async (list) => {
   return colonies;
 };
 
-const getAnimals = async (colonyId, colonyName, colonySize, pageSize, pageNum) => {
+const getAnimals = async (colonyId, colonyName, accessRights, colonySize, pageSize, pageNum) => {
   const colonyRef = db.collection('colonies').doc(colonyId);
   const animalsRef = colonyRef.collection('animals').limit(pageSize).offset(pageSize * pageNum);
 
   const snapshot = await animalsRef.get();
   const results = snapshot.docs.map(doc => doc.data());
-  const animals = { animals: results, colonyId, colonyName, colonySize };
+  const animals = { animals: results, colonyId, accessRights, colonyName, colonySize };
   return animals;
 };
 

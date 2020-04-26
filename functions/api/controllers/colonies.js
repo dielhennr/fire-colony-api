@@ -106,9 +106,9 @@ const storeImageLink = async (req, res) => {
  * @param res
  */
 const getAnimals = async (req, res) => {
-  const { body: { colonyId, colonyName, colonySize, rowsPerPage, page } } = req;
+  const { body: { colonyId, colonyName, accessRights, colonySize, rowsPerPage, page } } = req;
 
-  await dataService.getAnimals(colonyId, colonyName, colonySize, rowsPerPage, page)
+  await dataService.getAnimals(colonyId, colonyName, accessRights, colonySize, rowsPerPage, page)
     .then((animals) => {
       res.status(200).json(animals);
     })
