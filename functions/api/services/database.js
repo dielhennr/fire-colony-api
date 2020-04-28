@@ -167,6 +167,7 @@ const storeImageLink = async (colonyId, animalId, url) => {
   animal.update({
     imageLinks: admin.firestore.FieldValue.arrayUnion(url),
   });
+  return { animalId, url };
 };
 
 const getColonies = async (list) => {
