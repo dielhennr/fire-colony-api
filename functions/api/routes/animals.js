@@ -12,5 +12,7 @@ router.post('/edit', authentication, animalController.editAnimal);
 
 router.post('/storeImageLink', authentication, animalController.storeImageLink);
 
+router.post('/storeNote', authentication, animalController.storeNote);
+
 module.exports = router;
 

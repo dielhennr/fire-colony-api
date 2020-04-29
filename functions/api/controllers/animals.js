@@ -51,6 +51,7 @@ const createAnimal = async (headers, line) => {
   }
 
   animal.imageLinks = [];
+  animal.notes = [];
 
   return animal;
 };
@@ -64,4 +65,13 @@ const storeImageLink = async (req, res) => {
     .catch(() => res.sendStatus(500));
 }
 
-module.exports = { getAnimals, deleteAnimal, editAnimal, storeImageLink, createAnimal };
+const storeNote = async (req, res) => {
+  const { body: { colonyId, animalId, note } } = req;
+  await dataService.storeNote(colonyId, animalId, note)
+    .then((note) => {
+      res.status(200).json(note);
+    })
+    .catch(() => res.sendStatus(500));
+}
+
+module.exports = { getAnimals, deleteAnimal, editAnimal, storeImageLink, createAnimal, storeNote };
