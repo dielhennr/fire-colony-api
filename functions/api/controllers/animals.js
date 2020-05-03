@@ -47,7 +47,7 @@ const createAnimal = async (headers, line) => {
   const lineSplit = line.split(',');
 
   for (let i = 0; i < headers.length; i++) {
-    animal[headers[i]] = lineSplit[i];
+    animal[headers[i].trim()] = lineSplit[i];
   }
 
   animal.imageLinks = [];
