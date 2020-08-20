@@ -40,25 +40,26 @@ npm install
 ```
 
 ### Starting the Server
-You'll notice there are `scripts` in the `package.json` file, these
-are shorthand commands that you can also define to help accomplish
-tasks that you run frequently. 
-
-You will need to get the firebase command line tools working from this repo and then run
+You will need to get the [Firebase CLI](https://firebase.google.com/docs/cli) and login using
+```bash
+firebase login
+```
 
 You can start up the server with
 ```bash
 firebase serve
 ```
 
+and you'll notice the app begins to listen on [localhost:5000](http://localhost:5000)
+and has hot-reloading built in!  You won't need to manually start up the app
+every time you make a change, what a world we live in...
+
+
 ### Deploying server
-Note that a firebase database instance must be created and the api key must be in the functions directory.
-Otherwise api requests will be rejected.
+Note that a firebase database instance must be created and the api key must be in the functions directory 
+to deploy the REST endpoints. 
 
 ```bash
 firebase deploy
 ```
 
-and you'll notice the app begins to listen on [localhost:3000](http://localhost:3000)
-and has hot-reloading built in!  You won't need to manually start up the app
-every time you make a change, what a world we live in...
