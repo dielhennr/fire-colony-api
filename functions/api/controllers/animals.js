@@ -45,13 +45,18 @@ const editAnimal = async (req, res) => {
 const createAnimal = async (headers, line) => {
   const animal = {};
   const lineSplit = line.split(',');
-
+//Might have to update headers length if we're going to be 
+//using csv files that already include tags...
+//or are tags going to be an interface feature only
+//idk if we're trying to go csv free...
   for (let i = 0; i < headers.length; i++) {
     animal[headers[i].trim()] = lineSplit[i];
   }
 
   animal.imageLinks = [];
   animal.notes = [];
+  animal.tags = '';
+  //add tags?
 
   return animal;
 };
@@ -73,5 +78,14 @@ const storeNote = async (req, res) => {
     })
     .catch(() => res.sendStatus(500));
 }
+
+// const storeTags = async (req, res) => {
+//   const { body: { colonyId, animalId, tags } } = req;
+//   await dataService.storeNote(colonyId, animalId, tags)
+//     .then((tags) => {
+//       res.status(200).json(tags);
+//     })
+//     .catch(() => res.sendStatus(500));
+// }
 
 module.exports = { getAnimals, deleteAnimal, editAnimal, storeImageLink, createAnimal, storeNote };

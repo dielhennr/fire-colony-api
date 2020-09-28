@@ -1,10 +1,10 @@
 const admin = require('firebase-admin');
 
-const serviceAccount = require('../../animal-colony-76d9b-firebase-adminsdk-egbh6-ac4894dd6b.json');
+const serviceAccount = require('../../animal-colony-project-firebase-adminsdk-5815z-97e51a1b46.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://animal-colony-61928.firebaseio.com',
+  databaseURL: 'http://5000/api',
 });
 
 const db = admin.firestore();
