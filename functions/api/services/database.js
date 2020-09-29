@@ -179,6 +179,15 @@ const storeNote = async (colonyId, animalId, note) => {
   return { animalId, note };
 };
 
+const storeTag = async (colonyId, animalId, tag) => {
+  const colony = db.collection('colonies').doc(colonyId);
+  const animal = colony.collection('animals').doc(animalId);
+  animal.update({
+    tags: admin.firestore.FieldValue.arrayUnion(tag),
+  });
+  return { animalId, tag };
+};
+
 const getColonies = async (list) => {
   const coloniesRef = db.collection('colonies');
   const colonies = [];
@@ -219,5 +228,5 @@ const getAnimals = async (colonyId, pageSize, pageNum) => {
 };
 
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal, getSharedColonies, storeImageLink, storeNote
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal, getSharedColonies, storeImageLink, storeNote, storeTag
 };

@@ -1,4 +1,5 @@
 const dataService = require('../services/database');
+// const tagging = require('./tags');
 
 /**
  * Get animals of a colony starting at a certain page with a certain page size
@@ -55,7 +56,7 @@ const createAnimal = async (headers, line) => {
 
   animal.imageLinks = [];
   animal.notes = [];
-  animal.tags = '';
+  animal.tags = [];
   //add tags?
 
   return animal;
@@ -79,13 +80,20 @@ const storeNote = async (req, res) => {
     .catch(() => res.sendStatus(500));
 }
 
-// const storeTags = async (req, res) => {
-//   const { body: { colonyId, animalId, tags } } = req;
-//   await dataService.storeNote(colonyId, animalId, tags)
-//     .then((tags) => {
-//       res.status(200).json(tags);
-//     })
-//     .catch(() => res.sendStatus(500));
-// }
+const storeTags = async (req, res) => {
+  const { body: { colonyId, animalId, tag } } = req;
+  await dataService.storeNote(colonyId, animalId, tag)
+    .then((tag) => {
+      res.status(200).json(tag);
+    })
+    .catch(() => res.sendStatus(500));
+}
 
-module.exports = { getAnimals, deleteAnimal, editAnimal, storeImageLink, createAnimal, storeNote };
+// function storeTags(){
+//   const tags = tagging.makeHashTable();
+//   // tags.add('mouse 1', ['tag1', 'tag2']);
+//   // console.log(tags.retreive('mouse 1'));
+// }
+// storeTags();
+
+module.exports = { getAnimals, deleteAnimal, editAnimal, storeImageLink, createAnimal, storeNote, storeTags };
