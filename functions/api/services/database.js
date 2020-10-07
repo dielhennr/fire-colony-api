@@ -21,6 +21,41 @@ const createUser = async (registrationInformation) => {
   return registrationInformation;
 };
 
+
+// const addAnimal = async (colonyId, animalInfo) => {
+//   const colony = db.collection('colonies').doc(colonyId);
+//   await colony.update({
+//     size: admin.firestore.FieldValue.increment(1),
+//   });
+//   const animal = colony.collection('animals').doc();
+//   animalInfo.animalUUID = animal.id;
+//   await animal.set(animalInfo);
+//   return animal.id;
+// };
+
+
+const createNewTag = async (tagName, animalList) => {
+  const newTag = db.collection('tags').doc();
+  const tagInfo = {name:tagName, list:animalList};
+  await newTag.set(tagInfo);
+  return newTag.id;
+}
+
+const getTag = async (tagName) => {
+  const tagData = await db.collection('tags').doc(tagName).get();
+  return tagData.data();
+}
+
+// const getTags = async () => {
+//   const tagReference = await db.collection('tags').get();
+//   const results = tagReference.docs.map(doc => doc.data());
+//   const tags = { tags: results, colonyId };
+//   return tags;
+// }
+
+//TODO maybe add tag to colony? or animal? 
+//TODO add delete tag? 
+
 /**
  * Retrieves user details from the mock database based on a given username
  * @param username
@@ -30,7 +65,6 @@ const getUser = async (email) => {
   const user = await db.collection('users').doc(email).get();
   return user.data();
 };
-
 
 /**
  * Adds a colony uuid to a users ownedColonies
@@ -227,6 +261,6 @@ const getAnimals = async (colonyId, pageSize, pageNum) => {
   return animals;
 };
 
+
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal, getSharedColonies, storeImageLink, storeNote, storeTag
-};
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal, getSharedColonies, storeImageLink, storeNote, storeTag, createNewTag, getTag };

@@ -82,7 +82,7 @@ const storeNote = async (req, res) => {
 
 const storeTags = async (req, res) => {
   const { body: { colonyId, animalId, tag } } = req;
-  await dataService.storeNote(colonyId, animalId, tag)
+  await dataService.storeTag(colonyId, animalId, tag)
     .then((tag) => {
       res.status(200).json(tag);
     })
