@@ -1,14 +1,19 @@
 const { toSafeInteger } = require('lodash');
 const dataService = require('../services/database');
 
+//next?
 const createTag = async (req, res) => {
-  console.log(`in controller, tagname=${tagName}`);
   const { body: { tagName, mouseList } } = req;
+  console.log(`in controller, tagname=${tagName}`);
+
+  const tagMeta = {name:tagName, list:mouseList}
+  await dataService.createNewTag(tagMeta);
   
-  await dataService.createNewTag(tagName, mouseList)
-    .then((tagDetails) => {
-      res.status(200).json(tagDetails);
-    }).catch(() => res.sendStatus(404));
+  res.status(200).json(tagMeta);
+  // await dataService.createNewTag(tagName, mouseList)
+  //   .then((tagDetails) => {
+  //     res.status(200).json(tagDetails);
+  //   }).catch(() => res.sendStatus(404));
 }
 
 // const getAnimals = async (req, res) => {

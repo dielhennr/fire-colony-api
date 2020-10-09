@@ -34,9 +34,18 @@ const createUser = async (registrationInformation) => {
 // };
 
 
-const createNewTag = async (tagName, animalList) => {
+// const createNewTag = async (tagName, animalList) => {
+//   const newTag = db.collection('tags').doc();
+//   const tagInfo = {name:tagName, list:animalList};
+//   await newTag.set(tagInfo);
+//   return newTag.id;
+// }
+
+//tagInfo = {name:tagName, list:animalList};
+const createNewTag = async (tagInfo) => {
+  console.log(`adding tag: ${tagInfo}`);
   const newTag = db.collection('tags').doc();
-  const tagInfo = {name:tagName, list:animalList};
+  // const tagMeta = {name:tagName, list:animalList};
   await newTag.set(tagInfo);
   return newTag.id;
 }
