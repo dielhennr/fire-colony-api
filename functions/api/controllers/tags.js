@@ -3,13 +3,13 @@ const dataService = require('../services/database');
 
 //next?
 const createTag = async (req, res) => {
-  const { body: { tagName, mouseList } } = req;
+  const { body: { tagName, mouse } } = req;
   console.log(`in controller, tagname=${tagName}`);
 
-  const tagMeta = {name:tagName, list:mouseList}
-  await dataService.createNewTag(tagMeta);
+  // const tagMeta = {name:tagName, list:mouse}
+  await dataService.createNewTag(tagName, mouse);
   
-  res.status(200).json(tagMeta);
+  res.status(200).json({name:tagName, list: mouse});
   // await dataService.createNewTag(tagName, mouseList)
   //   .then((tagDetails) => {
   //     res.status(200).json(tagDetails);

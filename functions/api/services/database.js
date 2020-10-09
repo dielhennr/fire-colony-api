@@ -42,13 +42,56 @@ const createUser = async (registrationInformation) => {
 // }
 
 //tagInfo = {name:tagName, list:animalList};
-const createNewTag = async (tagInfo) => {
-  console.log(`adding tag: ${tagInfo}`);
-  const newTag = db.collection('tags').doc();
-  // const tagMeta = {name:tagName, list:animalList};
-  await newTag.set(tagInfo);
+const createNewTag = async (name, mouse) => {
+  console.log(`adding tag: name: ${name},mouse: ${mouse}`);
+
+  const newTag = db.collection('tags').doc(name);
+
+  // newTag.set({list: [mouse]});
+  // console.log(`newTag.list is ${newTag.list}`);
+  
+  newTag.get()
+  .then(function(doc1) {
+    if (doc1.exists) {
+      console.log("currmouse:", mouse);
+      console.log("Document data1:", doc1.data());
+      newTag.update({
+        list: admin.firestore.FieldValue.arrayUnion(mouse),
+      });
+
+      console.log("Document data2:", doc1.data());
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+      newTag.set({list: [mouse]});
+      console.log("Created such document");
+    }
+  }).catch(function(error) {
+    console.log("Error getting document:", error);
+  });
+
+
+  // newTag.update({
+  //   list: admin.firestore.FieldValue.arrayUnion(mouse),
+  // });
+  // console.log(`list of mice before set: ${newTag.list}`);
+
+  // await newTag.set({list: [mouse]});
+  // console.log(`list of mice after set: ${(await newTag.get(list)).exists}`);
+
   return newTag.id;
 }
+
+/**
+ * 
+ * {const colony = db.collection('colonies').doc(colonyId);
+  const animal = colony.collection('animals').doc(animalId);
+  animal.update({
+    tags: admin.firestore.FieldValue.arrayUnion(tag),
+  });
+  return { animalId, tag };
+};} tagName 
+ */
 
 const getTag = async (tagName) => {
   const tagData = await db.collection('tags').doc(tagName).get();
