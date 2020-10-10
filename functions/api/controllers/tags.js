@@ -1,30 +1,28 @@
 const { toSafeInteger } = require('lodash');
 const dataService = require('../services/database');
 
-//next?
-const createTag = async (req, res) => {
+
+const addToTag = async (req, res) => {
   const { body: { tagName, mouse } } = req;
   console.log(`in controller, tagname=${tagName}`);
 
   // const tagMeta = {name:tagName, list:mouse}
-  await dataService.createNewTag(tagName, mouse);
+  await dataService.addNewToTag(tagName, mouse);
   
   res.status(200).json({name:tagName, list: mouse});
-  // await dataService.createNewTag(tagName, mouseList)
-  //   .then((tagDetails) => {
-  //     res.status(200).json(tagDetails);
-  //   }).catch(() => res.sendStatus(404));
+  
 }
 
-// const getAnimals = async (req, res) => {
-//   const { body: { colonyId, rowsPerPage, page } } = req;
+const createTag = async (req, res) => {
+  const { body: { tagName } } = req;
+  console.log(`in controller, tagname=${tagName}`);
 
-//   await dataService.getAnimals(colonyId, rowsPerPage, page)
-//     .then((animals) => {
-//       res.status(200).json(animals);
-//     })
-//     .catch(() => res.sendStatus(404));
-// };
+  // const tagMeta = {name:tagName, list:mouse}
+  await dataService.createNewTag(tagName);
+  
+  res.status(200).json({name:tagName});
+  
+}
 
 
 const getOneTag = async (req, res) => {
@@ -47,7 +45,7 @@ const getOneTag = async (req, res) => {
 //     .catch(() => res.sendStatus(404));
 // }
 
-module.exports = { createTag, getOneTag };
+module.exports = { addToTag, createTag, getOneTag };
 
 
 

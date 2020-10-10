@@ -42,14 +42,10 @@ const createUser = async (registrationInformation) => {
 // }
 
 //tagInfo = {name:tagName, list:animalList};
-const createNewTag = async (name, mouse) => {
+
+const addNewToTag = async (name, mouse) => {
   console.log(`adding tag: name: ${name},mouse: ${mouse}`);
-
   const newTag = db.collection('tags').doc(name);
-
-  // newTag.set({list: [mouse]});
-  // console.log(`newTag.list is ${newTag.list}`);
-  
   newTag.get()
   .then(function(doc1) {
     if (doc1.exists) {
@@ -70,28 +66,23 @@ const createNewTag = async (name, mouse) => {
     console.log("Error getting document:", error);
   });
 
-
-  // newTag.update({
-  //   list: admin.firestore.FieldValue.arrayUnion(mouse),
-  // });
-  // console.log(`list of mice before set: ${newTag.list}`);
-
-  // await newTag.set({list: [mouse]});
-  // console.log(`list of mice after set: ${(await newTag.get(list)).exists}`);
-
   return newTag.id;
 }
 
-/**
- * 
- * {const colony = db.collection('colonies').doc(colonyId);
-  const animal = colony.collection('animals').doc(animalId);
-  animal.update({
-    tags: admin.firestore.FieldValue.arrayUnion(tag),
+const createNewTag = async (name) => {
+  console.log(`adding tag: name: ${name}`);
+  const newTag = db.collection('tags').doc(name);
+  newTag.get()
+  .then(function(doc1) {
+      console.log("No such document!");
+      newTag.set({list: []});
+      console.log("Created such document");
+  }).catch(function(error) {
+    console.log("Error getting document:", error);
   });
-  return { animalId, tag };
-};} tagName 
- */
+
+  return newTag.id;
+}
 
 const getTag = async (tagName) => {
   const tagData = await db.collection('tags').doc(tagName).get();
@@ -315,4 +306,4 @@ const getAnimals = async (colonyId, pageSize, pageNum) => {
 
 
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal, getSharedColonies, storeImageLink, storeNote, storeTag, createNewTag, getTag };
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal, getSharedColonies, storeImageLink, storeNote, storeTag, addNewToTag, createNewTag, getTag };
