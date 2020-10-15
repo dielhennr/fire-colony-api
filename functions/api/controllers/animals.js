@@ -12,6 +12,7 @@ const getAnimals = async (req, res) => {
 
   await dataService.getAnimals(colonyId, rowsPerPage, page)
     .then((animals) => {
+      console.log(JSON.stringify(animals));
       res.status(200).json(animals);
     })
     .catch(() => res.sendStatus(404));

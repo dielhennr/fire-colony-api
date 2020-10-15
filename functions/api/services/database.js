@@ -74,9 +74,15 @@ const createNewTag = async (name) => {
   const newTag = db.collection('tags').doc(name);
   newTag.get()
   .then(function(doc1) {
+    if (doc1.exists) {
+      console.log(`${doc1.id} already exists`);
+      
+    } else {
+      // doc.data() will be undefined in this case
       console.log("No such document!");
       newTag.set({list: []});
       console.log("Created such document");
+    }
   }).catch(function(error) {
     console.log("Error getting document:", error);
   });
@@ -89,15 +95,24 @@ const getTag = async (tagName) => {
   return tagData.data();
 }
 
-// const getTags = async () => {
-//   const tagReference = await db.collection('tags').get();
-//   const results = tagReference.docs.map(doc => doc.data());
-//   const tags = { tags: results, colonyId };
-//   return tags;
-// }
+// const colonyRef = db.collection('colonies').doc(colonyId);
+//   const animalsRef = colonyRef.collection('animals').limit(pageSize).offset(pageSize * pageNum);
 
-//TODO maybe add tag to colony? or animal? 
-//TODO add delete tag? 
+//   const snapshot = await animalsRef.get();
+//   const results = snapshot.docs.map(doc => doc.data());
+//   const animals = { animals: results, colonyId };
+//   return animals;
+
+
+const getTags = async () => {
+  const tagReference = db.collection('tags');
+  const snapshot = await tagReference.get();
+  const results = snapshot.docs.map(doc => doc.id);
+  console.log(`results in db: ${results}`);
+  const tagList = {tagList: results};
+  console.log(`taglist in db: ${JSON.stringify(tagList)}`);
+  return tagList;
+}
 
 /**
  * Retrieves user details from the mock database based on a given username
@@ -301,9 +316,10 @@ const getAnimals = async (colonyId, pageSize, pageNum) => {
   const snapshot = await animalsRef.get();
   const results = snapshot.docs.map(doc => doc.data());
   const animals = { animals: results, colonyId };
+  
   return animals;
 };
 
 
 module.exports = {
-  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal, getSharedColonies, storeImageLink, storeNote, storeTag, addNewToTag, createNewTag, getTag };
+  createUser, getUser, addColony, addAnimal, addColonyToUser, getColonies, getAnimals, addSharedColonyToUser, deleteColony, deleteAnimal, editAnimal, getSharedColonies, storeImageLink, storeNote, storeTag, addNewToTag, createNewTag, getTag, getTags };

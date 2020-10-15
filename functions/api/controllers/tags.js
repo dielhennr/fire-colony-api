@@ -37,15 +37,51 @@ const getOneTag = async (req, res) => {
 
 
 
-// const getAllTags = async (req, res) => {
-//   await dataService.getTags()
-//     .then((tags) => {
-//       res.status(200).json(tags);
-//     })
-//     .catch(() => res.sendStatus(404));
-// }
+const getAllTags = async (req, res) => {
+  await dataService.getTags()
+  // await dataService.collection('tags')
+    .then((docs) => {
+      // const dataList = [];
+      // docs.forEach(doc => {
+      //   dataList.push(doc.id);
+      // })
+      console.log(`docs: ${JSON.stringify(docs)}`);
+      
+      // return new Response(JSON.stringify(dataList), {
+      //   status: res.status,
+      //   statusText: res.statusText,
+      //   headers: res.headers
+      // });
+      
+      // .writeHead(200, {
+      //   'Content-Length': Buffer.byteLength(JSON.stringify(dataList)),
+      //   'Content-Type': 'text/plain'
+      // })
+      // res.status(200)
+      //   .write(JSON.stringify(dataList))
+      //   .end('sent tags');
 
-module.exports = { addToTag, createTag, getOneTag };
+      // res.send(JSON.stringify(dataList));
+      // res.status(200).end(JSON.stringify(dataList));
+      
+      // THIS WORKED:
+      // res.status(200).json({
+      //   status: 'succes',
+      //   data: docs,
+      // })
+
+      res.status(200).json(docs);
+
+      // res.status(200).write(JSON.stringify(dataList)).end();
+      // return JSON.stringify(dataList);
+    })
+    .catch((error) => {
+      res.sendStatus(404);
+      console.log(error)}
+    );
+}
+
+module.exports = { addToTag, createTag, getOneTag, getAllTags };
 
 
 
