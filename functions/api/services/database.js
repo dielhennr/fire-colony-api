@@ -21,28 +21,6 @@ const createUser = async (registrationInformation) => {
   return registrationInformation;
 };
 
-
-// const addAnimal = async (colonyId, animalInfo) => {
-//   const colony = db.collection('colonies').doc(colonyId);
-//   await colony.update({
-//     size: admin.firestore.FieldValue.increment(1),
-//   });
-//   const animal = colony.collection('animals').doc();
-//   animalInfo.animalUUID = animal.id;
-//   await animal.set(animalInfo);
-//   return animal.id;
-// };
-
-
-// const createNewTag = async (tagName, animalList) => {
-//   const newTag = db.collection('tags').doc();
-//   const tagInfo = {name:tagName, list:animalList};
-//   await newTag.set(tagInfo);
-//   return newTag.id;
-// }
-
-//tagInfo = {name:tagName, list:animalList};
-
 const addNewToTag = async (name, mouse) => {
   console.log(`adding tag: name: ${name},mouse: ${mouse}`);
   const newTag = db.collection('tags').doc(name);
@@ -95,22 +73,11 @@ const getTag = async (tagName) => {
   return tagData.data();
 }
 
-// const colonyRef = db.collection('colonies').doc(colonyId);
-//   const animalsRef = colonyRef.collection('animals').limit(pageSize).offset(pageSize * pageNum);
-
-//   const snapshot = await animalsRef.get();
-//   const results = snapshot.docs.map(doc => doc.data());
-//   const animals = { animals: results, colonyId };
-//   return animals;
-
-
 const getTags = async () => {
   const tagReference = db.collection('tags');
   const snapshot = await tagReference.get();
   const results = snapshot.docs.map(doc => doc.id);
-  console.log(`results in db: ${results}`);
   const tagList = {tagList: results};
-  console.log(`taglist in db: ${JSON.stringify(tagList)}`);
   return tagList;
 }
 
@@ -316,7 +283,7 @@ const getAnimals = async (colonyId, pageSize, pageNum) => {
   const snapshot = await animalsRef.get();
   const results = snapshot.docs.map(doc => doc.data());
   const animals = { animals: results, colonyId };
-  
+
   return animals;
 };
 
